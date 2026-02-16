@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance | RailSmart IoT</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f7f9; display: flex; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        .sidebar { width: 250px; background: #002a52; color: white; padding: 20px; position: fixed; height: 100vh; }
+        .sidebar h2 { font-size: 20px; border-bottom: 1px solid #1a4d80; padding-bottom: 10px; margin-bottom: 20px; }
+        .sidebar ul { list-style: none; }
+        .sidebar ul li { padding: 15px; border-radius: 8px; margin-bottom: 5px; cursor: pointer; transition: 0.3s; }
+        .sidebar ul li a { color: white; text-decoration: none; display: block; }
+        .sidebar ul li:hover { background: #004a99; }
+        .sidebar .active { background: #0056b3; font-weight: bold; }
+
+        /* Main Content Area */
+        .main-content { margin-left: 250px; width: calc(100% - 250px); padding: 40px; }
+        .header { margin-bottom: 30px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+
+        /* Maintenance Grid */
+        .maint-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .card h3 { margin-bottom: 20px; color: #003366; font-size: 18px; border-left: 5px solid #0056b3; padding-left: 10px; }
+
+        /* Health Indicators */
+        .health-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .battery-container { width: 100px; height: 12px; background: #eee; border-radius: 6px; overflow: hidden; }
+        .battery-fill { height: 100%; background: #27ae60; }
+
+        /* Status Badges */
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .badge-online { background: #d4edda; color: #155724; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-critical { background: #f8d7da; color: #721c24; }
+
+        /* Repair Log Table */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        th { color: #666; font-weight: 600; }
+
+        /* Action Button */
+        .btn-maint { background: #0056b3; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold; }
+        .btn-maint:hover { background: #003366; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>RailSmart IoT</h2>
+        <ul>
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="Platform View.html">Platform View</a></li>
+            <li><a href="IoT Sensors.html">IoT Sensors</a></li>
+            <li class="active"><a href="Maintenance.html">Maintenance</a></li>
+            <li style="margin-top: 50px; color: #ffbcbc; cursor: pointer;">Logout</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Hardware Maintenance & Health</h1>
+            <p>Monitor sensor battery life and technical ticket history.</p>
+        </div>
+
+        <div class="maint-grid">
+            
+            <div class="card">
+                <h3>Sensor Battery Status</h3>
+                <div class="health-row">
+                    <span>Ultrasonic (Bin 1)</span>
+                    <div class="battery-container"><div class="battery-fill" style="width: 85%;"></div></div>
+                    <span class="badge badge-online">85%</span>
+                </div>
+                <div class="health-row">
+                    <span>IR Sensor (Bin 2)</span>
+                    <div class="battery-container"><div class="battery-fill" style="width: 42%; background: #f1c40f;"></div></div>
+                    <span class="badge badge-warning">42%</span>
+                </div>
+                <div class="health-row">
+                    <span>Load Cell (Bin 3)</span>
+                    <div class="battery-container"><div class="battery-fill" style="width: 15%; background: #e74c3c;"></div></div>
+                    <span class="badge badge-critical">15%</span>
+                </div>
+                <button class="btn-maint" onclick="alert('Technician Dispatched for Battery Replacement')">Order Battery Service</button>
+            </div>
+
+            <div class="card">
+                <h3>Scheduled Cleaning</h3>
+                <table>
+                    <thead>
+                        <tr><th>Bin ID</th><th>Time</th><th>Staff</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>P1-001</td><td>04:00 PM</td><td>Rahul S.</td></tr>
+                        <tr><td>P1-002</td><td>06:30 PM</td><td>Amit K.</td></tr>
+                        <tr><td>P2-005</td><td>08:00 PM</td><td>Sunita M.</td></tr>
+                    </tbody>
+                </table>
+                <button class="btn-maint" style="background: #27ae60;" onclick="alert('Cleaning schedule updated successfully')">Update Schedule</button>
+            </div>
+
+            <div class="card" style="grid-column: span 2;">
+                <h3>Recent System Faults</h3>
+                <table>
+                    <thead>
+                        <tr><th>Issue Date</th><th>Component</th><th>Fault Description</th><th>Resolution</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>2026-01-25</td><td>WiFi Module</td><td>Signal dropping at Platform 2</td><td>Replaced Antenna</td></tr>
+                        <tr><td>2026-01-27</td><td>AI Token Logic</td><td>Duplicate token generation error</td><td>Firmware Updated</td></tr>
+                        <tr><td>2026-01-28</td><td>Moisture Sensor</td><td>Calibration required (Bin 4)</td><td><span style="color: #e67e22;">Pending</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

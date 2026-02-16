@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Smart Railway Dustbin</title>
+    <style>
+        /* --- CSS STYLING --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #003366;
+            color: white;
+            padding: 25px;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            font-size: 22px;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #1a4d80;
+            text-align: center;
+        }
+
+        .sidebar ul { list-style: none; }
+        .sidebar ul li {
+            padding: 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .sidebar ul li a { text-decoration: none; color: white; display: block; }
+        .sidebar ul li:hover { background: #004a99; }
+        .sidebar ul li.active { background: #0056b3; font-weight: bold; }
+
+        .main-content {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 40px;
+        }
+
+        /* HEADER BOXES */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .info-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border-left: 4px solid #003366;
+            min-width: 180px;
+        }
+
+        .info-box span { display: block; }
+        .label { font-size: 11px; color: #888; text-transform: uppercase; font-weight: bold; }
+        .value { font-size: 18px; font-weight: bold; color: #003366; }
+
+        /* CARDS */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            border-top: 4px solid #003366;
+        }
+
+        .card p { font-size: 32px; font-weight: bold; }
+
+        /* MONITORING */
+        .monitor-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .bin-item {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .progress-wrapper { width: 80%; background: #eee; height: 12px; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; transition: width 1s; }
+        .bg-green { background: #28a745; }
+        .bg-orange { background: #fd7e14; }
+        .bg-red { background: #dc3545; }
+
+        .status-pill { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; text-align: center; width: 100px; }
+        .txt-green { background: #e8f5e9; color: #2e7d32; }
+        .txt-orange { background: #fff3e0; color: #ef6c00; }
+        .txt-red { background: #ffebee; color: #c62828; }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>RailSmart IoT</h2>
+        <ul>
+            <li class="active">Dashboard</li>
+            <li><a href="Platform View.html">Platform View</a></li>
+            <li><a href="IoT Sensors.html">IoT Sensors</a></li>
+            <li><a href="Maintenance.html">Maintenance</a></li>
+            <li style="margin-top: auto; color: #ffbcbc; cursor: pointer;" onclick="window.location.href='index.html'">Logout</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div>
+                <h1>Railway Monitoring</h1>
+                <p>Status: <span style="color: #28a745;">Online</span></p>
+            </div>
+            <div class="info-container">
+                <div class="info-box">
+                    <span class="label">Current Location</span>
+                    <span id="user-location" class="value">Pune, MH, India</span>
+                </div>
+            
+                <div class="info-box">
+                    <span class="label">Pune Live Time</span>
+                    <span id="pune-clock" class="value">00:00:00</span>
+                </div>
+                
+                <div class="info-box">
+                    <span class="label">Today's Date</span>
+                    <span id="live-date" class="value">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="cards-container">
+            <div class="card"><h3>Total Bins</h3><p>24</p></div>
+            <div class="card"><h3>Active Sensors</h3><p style="color: #28a745;">22</p></div>
+            <div class="card"><h3>Alerts</h3><p style="color: #dc3545;">04</p></div>
+        </div>
+
+        <div class="monitor-section">
+            <h2>Live Fill Levels - Platform 1</h2>
+            <div class="bin-item">
+                <div class="bin-id">Bin #P1-A1</div>
+                <div class="progress-wrapper"><div class="progress-fill bg-green" style="width: 30%;"></div></div>
+                <div class="status-pill txt-green">30% - Low</div>
+            </div>
+            <div class="bin-item">
+                <div class="bin-id">Bin #P1-A2</div>
+                <div class="progress-wrapper"><div class="progress-fill bg-orange" style="width: 75%;"></div></div>
+                <div class="status-pill txt-orange">75% - High</div>
+            </div>
+            <div class="bin-item">
+                <div class="bin-id">Bin #P1-B1</div>
+                <div class="progress-wrapper"><div class="progress-fill bg-red" style="width: 95%;"></div></div>
+                <div class="status-pill txt-red">95% - FULL</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. PUNE (IST) CLOCK & DATE LOGIC
+        function updatePuneClock() {
+            const now = new Date();
+            
+            // Time format for Pune (IST)
+            const timeOptions = { 
+                timeZone: 'Asia/Kolkata', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit', 
+                hour12: true 
+            };
+            const timeFormatter = new Intl.DateTimeFormat('en-IN', timeOptions);
+            document.getElementById('pune-clock').textContent = timeFormatter.format(now);
+    
+            // Date format
+            const dateOptions = { 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric' 
+            };
+            document.getElementById('live-date').textContent = now.toLocaleDateString('en-IN', dateOptions);
+        }
+    
+        // Update every second
+        setInterval(updatePuneClock, 1000);
+        updatePuneClock();
+    
+        // 2. LOCATION STATUS SETTING
+        document.getElementById('user-location').textContent = "Pune, MH, India";
+        document.getElementById('user-location').style.color = "#003366";
+    </script>
+</body>
+</html>

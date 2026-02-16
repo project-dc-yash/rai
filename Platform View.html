@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform View | RailSmart IoT</title>
+    <style>
+        /* CSS STYLING */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body { background-color: #f0f2f5; display: flex; min-height: 100vh; }
+
+        /* Sidebar - Keep consistent with your main page */
+        .sidebar {
+            width: 250px; background: #002a52; color: white;
+            padding: 20px; position: fixed; height: 100vh;
+        }
+        .sidebar h2 { font-size: 20px; border-bottom: 1px solid #1a4d80; padding-bottom: 10px; margin-bottom: 20px; }
+        .sidebar ul { list-style: none; }
+        .sidebar ul li { padding: 15px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; }
+        .sidebar ul li a { color: white; text-decoration: none; display: block; }
+        .sidebar ul li:hover { background: #004a99; }
+        .sidebar .active { background: #0056b3; font-weight: bold; }
+
+        /* Main Content */
+        .main-content { margin-left: 250px; width: calc(100% - 250px); padding: 40px; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        /* Platform Map Design */
+        .station-map {
+            background: #fff; padding: 40px; border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); position: relative;
+        }
+
+        /* Railway Track */
+        .track-zone {
+            width: 100%; height: 80px; background: #333;
+            border-top: 6px solid #555; border-bottom: 6px solid #555;
+            display: flex; align-items: center; justify-content: center;
+            color: #777; letter-spacing: 10px; font-weight: bold; margin-bottom: 10px;
+        }
+
+        /* Platform Area */
+        .platform-floor {
+            background: #bdc3c7; height: 250px; border-radius: 0 0 10px 10px;
+            display: flex; justify-content: space-around; align-items: flex-start;
+            padding-top: 30px; position: relative; border-top: 4px solid #95a5a6;
+        }
+
+        /* Dustbin Visual Icons */
+        .bin-container {
+            text-align: center; width: 80px; cursor: pointer; transition: transform 0.2s;
+        }
+        .bin-container:hover { transform: translateY(-5px); }
+
+        .bin-shape {
+            width: 45px; height: 60px; background: #ecf0f1; border: 3px solid #7f8c8d;
+            border-radius: 5px; margin: 0 auto 10px; position: relative; overflow: hidden;
+        }
+
+        .liquid-fill {
+            position: absolute; bottom: 0; width: 100%; transition: height 1s ease-in-out;
+        }
+
+        /* Status Colors */
+        .fill-low { background: #2ecc71; }    /* Green */
+        .fill-mid { background: #f1c40f; }    /* Yellow */
+        .fill-high { background: #e74c3c; }   /* Red */
+
+        .bin-label { font-size: 13px; font-weight: bold; color: #2c3e50; }
+        .bin-percent { font-size: 11px; color: #7f8c8d; }
+
+        /* Legend */
+        .legend { margin-top: 30px; display: flex; gap: 20px; font-size: 14px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>RailSmart IoT</h2>
+        <ul>
+            <li><a href="index.html">Dashboard</a></li>
+            <li class="active"><a href="Platform View.html">Platform View</a></li>
+            <li><a href="IoT Sensors.html">IoT Sensors</a></li>
+            <li><a href="Maintenance.html">Maintenance</a></li>
+            <li style="margin-top: 50px; color: #ffbcbc;">Logout</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div>
+                <h1>Platform 1: Live Status</h1>
+                <p>Real-time visual monitoring of waste bins.</p>
+            </div>
+            <button onclick="refreshBinData()" style="padding: 10px 20px; cursor: pointer; background: #003366; color: white; border: none; border-radius: 5px; font-weight: bold; transition: 0.3s;" onmouseover="this.style.background='#0056b3'" onmouseout="this.style.background='#003366'">
+                ⚡ Refresh Live Data
+            </button>
+        </div>
+
+        <div class="station-map">
+            <div class="track-zone"> RAILWAY TRACK - NO PASSENGERS </div>
+
+            <div class="platform-floor">
+                
+                <div class="bin-container" onclick="alert('Bin P1-A1 Status: OK')">
+                    <div class="bin-shape">
+                        <div class="liquid-fill fill-low" style="height: 25%;"></div>
+                    </div>
+                    <div class="bin-label">Bin A1</div>
+                    <div class="bin-percent">25% Full</div>
+                </div>
+
+                <div class="bin-container" onclick="alert('Bin P1-A2 Status: Action Required')">
+                    <div class="bin-shape">
+                        <div class="liquid-fill fill-mid" style="height: 60%;"></div>
+                    </div>
+                    <div class="bin-label">Bin A2</div>
+                    <div class="bin-percent">60% Full</div>
+                </div>
+
+                <div class="bin-container" onclick="alert('Bin P1-B1 Status: CRITICAL!')">
+                    <div class="bin-shape">
+                        <div class="liquid-fill fill-high" style="height: 95%;"></div>
+                    </div>
+                    <div class="bin-label" style="color: #e74c3c;">Bin B1</div>
+                    <div class="bin-percent" style="font-weight: bold; color: #e74c3c;">95% FULL</div>
+                </div>
+
+                <div class="bin-container" onclick="alert('Bin P1-B2 Status: OK')">
+                    <div class="bin-shape">
+                        <div class="liquid-fill fill-low" style="height: 15%;"></div>
+                    </div>
+                    <div class="bin-label">Bin B2</div>
+                    <div class="bin-percent">15% Full</div>
+                </div>
+
+            </div>
+
+            <div class="legend">
+                <div class="legend-item"><div class="dot" style="background: #2ecc71;"></div> Low (Clean)</div>
+                <div class="legend-item"><div class="dot" style="background: #f1c40f;"></div> Medium (Alert)</div>
+                <div class="legend-item"><div class="dot" style="background: #e74c3c;"></div> High (Urgent)</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function refreshBinData() {
+            // Find all bin containers
+            const bins = [
+                { id: 'A1', name: 'Bin A1' },
+                { id: 'A2', name: 'Bin A2' },
+                { id: 'B1', name: 'Bin B1' },
+                { id: 'B2', name: 'Bin B2' }
+            ];
+    
+            // Select all bin visual elements
+            const binElements = document.querySelectorAll('.bin-container');
+    
+            binElements.forEach((element, index) => {
+                // 1. Generate a random percentage between 5 and 98
+                const newPercent = Math.floor(Math.random() * 94) + 5;
+                
+                // 2. Find the fill bar and text
+                const fillBar = element.querySelector('.liquid-fill');
+                const percentText = element.querySelector('.bin-percent');
+                const labelText = element.querySelector('.bin-label');
+    
+                // 3. Update Height
+                fillBar.style.height = newPercent + "%";
+                percentText.innerText = newPercent + "% Full";
+    
+                // 4. Update Colors based on logic
+                fillBar.classList.remove('fill-low', 'fill-mid', 'fill-high');
+                labelText.style.color = "#2c3e50"; // Reset label color
+    
+                if (newPercent < 40) {
+                    fillBar.classList.add('fill-low');
+                } else if (newPercent >= 40 && newPercent < 80) {
+                    fillBar.classList.add('fill-mid');
+                } else {
+                    fillBar.classList.add('fill-high');
+                    labelText.style.color = "#e74c3c"; // Highlight label if critical
+                    percentText.style.fontWeight = "bold";
+                }
+            });
+    
+            console.log("Railway IoT Data Refreshed: " + new Date().toLocaleTimeString());
+        }
+    
+        // Attach the function to your button (Update your button HTML to use this function)
+    </script>
+</body>
+</html>

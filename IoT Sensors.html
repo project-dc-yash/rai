@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequential Smart Bins | RailSmart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f0f2f5; display: flex; min-height: 100vh; }
+
+        .sidebar { width: 250px; background: #002a52; color: white; padding: 20px; position: fixed; height: 100vh; }
+        .sidebar h2 { font-size: 20px; border-bottom: 1px solid #1a4d80; padding-bottom: 10px; margin-bottom: 20px; }
+        .sidebar ul { list-style: none; }
+        .sidebar ul li { padding: 15px; border-radius: 8px; color: white; margin-bottom: 5px; list-style: none;}
+
+        .main-content { margin-left: 250px; width: calc(100% - 250px); padding: 40px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        .btn-start { background: #27ae60; color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 18px; }
+
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+
+        .bin-row { margin-bottom: 30px; padding: 15px; border-radius: 10px; background: #fafafa; }
+        .bin-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; font-size: 18px; }
+        
+        .progress-container { background: #eee; height: 25px; border-radius: 15px; overflow: hidden; border: 1px solid #ccc; }
+        .progress-bar { height: 100%; width: 0%; background: #3498db; transition: width 0.1s linear; }
+
+        .token-display { 
+            margin-top: 10px; padding: 10px; background: #d4edda; 
+            border: 1px dashed #28a745; border-radius: 8px; 
+            display: none; font-weight: bold; color: #155724; text-align: center;
+        }
+
+        .log-box { height: 200px; overflow-y: auto; background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>RailSmart IoT</h2>
+        <ul>
+            <li class="active">Dashboard</li>
+            <li><a href="Platform View.html" style="text-decoration: none; color: white; display: block;">Platform View</a></li>
+        
+            <li><a href="IoT Sensors.html" style="text-decoration: none; color: white; display: block;">IoT Sensors</a></li>
+            <li><a href="Maintenance.html" style="text-decoration: none; color: white; display: block;">Maintenance</a></li>
+            <li style="margin-top: auto; color: #ffbcbc;">Logout</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Sequential Bin Monitoring</h1>
+            <button class="btn-start" onclick="startSequence()">▶ START PROCESS</button>
+        </div>
+
+        <div class="card">
+            <div class="bin-row" id="row-1">
+                <div class="bin-header"><span>Bin #1 (Platform A)</span> <span id="num-1">0%</span></div>
+                <div class="progress-container"><div id="bar-1" class="progress-bar"></div></div>
+                <div id="token-1" class="token-display">🎟️ TOKEN GENERATED!</div>
+            </div>
+
+            <div class="bin-row" id="row-2">
+                <div class="bin-header"><span>Bin #2 (Platform B)</span> <span id="num-2">0%</span></div>
+                <div class="progress-container"><div id="bar-2" class="progress-bar"></div></div>
+                <div id="token-2" class="token-display">🎟️ TOKEN GENERATED!</div>
+            </div>
+
+            <div class="bin-row" id="row-3">
+                <div class="bin-header"><span>Bin #3 (Platform C)</span> <span id="num-3">0%</span></div>
+                <div class="progress-container"><div id="bar-3" class="progress-bar"></div></div>
+                <div id="token-3" class="token-display">🎟️ TOKEN GENERATED!</div>
+            </div>
+        </div>
+
+        <div class="log-box" id="logs">
+            <div>> System Ready. Press Start to begin sequential collection.</div>
+        </div>
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        async function startSequence() {
+            // Fill Bin 1 (Speed: 50ms)
+            await fillBin(1, 50); 
+            // Fill Bin 2 (Speed: 80ms)
+            await fillBin(2, 100); 
+            // Fill Bin 3 (Speed: 110ms)
+            await fillBin(3, 180); 
+
+            addLog("ALL BINS PROCESSED SUCCESSFULLY.");
+        }
+
+        function fillBin(id, speed) {
+            return new Promise((resolve) => {
+                let current = 0;
+                addLog(`Starting Bin #${id} simulation...`);
+                
+                let interval = setInterval(() => {
+                    if (current < 95) {
+                        current++;
+                        document.getElementById(`num-${id}`).innerText = current + "%";
+                        document.getElementById(`bar-${id}`).style.width = current + "%";
+                        
+                        // Dynamic Color
+                        if(current > 80) document.getElementById(`bar-${id}`).style.backgroundColor = "#e74c3c";
+                    } else {
+                        clearInterval(interval);
+                        handleFinish(id);
+                        resolve();
+                    }
+                }, speed);
+            });
+        }
+
+        function handleFinish(id) {
+            const token = "RAIL-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+            document.getElementById(`token-${id}`).style.display = "block";
+            document.getElementById(`token-${id}`).innerText = "🎟️ TICKET TOKEN: " + token;
+            
+            addLog(`Bin #${id} FULL. Token ${token} generated.`);
+            generatePDF(id, token);
+        }
+
+        function generatePDF(id, token) {
+            const doc = new jsPDF();
+            doc.setFontSize(22);
+            doc.text("SMART WASTE REDEMPTION", 20, 20);
+            doc.setFontSize(14);
+            doc.text(`Bin ID: Platform-${id}`, 20, 40);
+            doc.text(`Token Code: ${token}`, 20, 55);
+            doc.text(`Status: Verified - 95% Full`, 20, 70);
+            doc.text("Redeem at any of the 20 Online Railway Platforms.", 20, 90);
+            doc.save(`Bin_${id}_Ticket.pdf`);
+        }
+
+        function addLog(msg) {
+            const logs = document.getElementById('logs');
+            const div = document.createElement('div');
+            div.innerText = `> [${new Date().toLocaleTimeString()}] ${msg}`;
+            logs.prepend(div);
+        }
+    </script>
+</body>
+</html>
